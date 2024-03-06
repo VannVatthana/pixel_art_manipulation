@@ -1,0 +1,12 @@
+structure 
+
+v1 x1, y1, z1 with int x,y,z
+
+to move is only translation or rotation along an axis
+
+apply rotation matrix to it then round because the coordinates are int
+keep the inside too
+
+
+
+// color of the inside
