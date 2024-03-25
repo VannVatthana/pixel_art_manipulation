@@ -23,7 +23,6 @@ std::tuple<std::vector<int>, std::vector<float>> SpringVoxel::getNeighbors(int i
         if(i != id){
             vec3 vox = v[id];
             if ((v[i].x <= vox.x + 1 && v[i].x >= vox.x - 1) && (v[i].y <= vox.y + 1 && v[i].y >= vox.y - 1) && (v[i].z <= vox.z + 1 && v[i].z >= vox.z - 1))
-            //if(norm(v[i] - vox)==1.0f)   // test keep only + neighbors
             {
                 neighb.push_back(i);
                 restLen.push_back(norm(vox - v[i]));
@@ -33,40 +32,11 @@ std::tuple<std::vector<int>, std::vector<float>> SpringVoxel::getNeighbors(int i
     return std::tuple<std::vector<int>, std::vector<float>>(neighb, restLen);
 }
 
-
-//void SpringVoxel::update()
-//{
-    // Version 1 //
-    /*RotateHandlePoints(this->fixed_points, this->handle_points, angle, axis);
-    int n_fix =fixed_points.size();
-    for (int i = 0; i < handle_points.size(); i++){
-		mesh cube_mesh = mesh_primitive_cube(handle_points[i], 1.0f);
-		mesh_drawable cube;
-		cube.initialize_data_on_gpu(cube_mesh); 
-		cube.material.color = { 1,1,0 };  
-		voxel_mesh[i + n_fix] = cube;
-	}*/
-    // apply_spring_forces();
-
-    /*for (int i = 0; i < v.size(); i++)
-    {
-        mesh cube = mesh_primitive_cube(v[i],1.0f);
-        mesh_drawable cube_drawable;
-        voxel_mesh[i].clear(); // need to clear the old mesh first before initialize a new one
-
-        cube_drawable.initialize_data_on_gpu(cube);
-        cube_drawable.material.color = rgb[i];
-        voxel_mesh[i] = cube_drawable;
-    }*/
-
-//}
-
 void SpringVoxel::apply_spring_forces()
 {
     // Calculate the spring force between each voxel and its neighbors
     for (int i = 0; i < v.size(); i++)
     {
-        //vec3 force{0.0f,0.0f,0.0f};
         for (int k = 0; k < neighbors[i].size(); k++)
         {
             int j = neighbors[i][k];

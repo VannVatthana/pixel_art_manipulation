@@ -66,6 +66,6 @@ void Voxel::updateCubesWithBone(const int boneID)//const Bone* bone
         vec4 local_position = vec4{skeleton[boneID]->localPos[i],1.0f};
         vec4 newGlobalPos = skeleton[boneID]->globalTransformation * local_position;
         
-        v[skeleton[boneID]->associatedCubes[i]] = vec3{int(newGlobalPos.x), int(newGlobalPos.y), int(newGlobalPos.z)};
+        v[skeleton[boneID]->associatedCubes[i]] = vec3{round(newGlobalPos.x), round(newGlobalPos.y), round(newGlobalPos.z)};
     }
 }

@@ -56,6 +56,7 @@ void scene_structure::initialize()
 	}
 	voxel_model.initialize();*/
 
+	// Read pixel images and build 3D voxel
 	vox_from_png.front.png2rgba("../assets/front_T.png");
 	vox_from_png.back.png2rgba("../assets/back_T.png");
 	vox_from_png.side.png2rgba("../assets/side_T.png");
@@ -96,7 +97,7 @@ void scene_structure::initialize()
 		mesh_drawable cube_drawable;
 		cube_drawable.initialize_data_on_gpu(cube);
 		cube_drawable.material.color = vox_from_png.voxel.rgb[i];
-		voxel_mesh.push_back(cube_drawable);
+		png_mesh.push_back(cube_drawable);
 	}
 }
 
@@ -111,6 +112,9 @@ void scene_structure::display_frame()
 
 	// Display cubes
 	for(mesh_drawable cube : voxel_mesh)
+		draw(cube, environment);
+	
+	for(mesh_drawable cube : png_mesh)
 		draw(cube, environment);
 
 	// Drawing mode
@@ -159,12 +163,12 @@ void scene_structure::mouse_move_event()
 				vec3 mouse_pos = unproject(camera_projection,camera_control.camera_model.matrix_frame(), inputs.mouse.position.current);
 				mouse_pos = vec3{0,mouse_pos.y,mouse_pos.z};
 				vec3 translation = mouse_pos-initial_mouse_pos;
-				voxel_model.v[10] += translation; 
+				voxel_model.v[10] += translation*2; 
 				voxel_model.apply_spring_forces();
 				
 				for (int i = 0 ; i<voxel_mesh.size(); i++)
 				{
-					mesh cube = mesh_primitive_cube(vox_from_png.voxel.v[i],1.0f);
+					mesh cube = mesh_primitive_cube(voxel_model.v[i],1.0f);
 					mesh_drawable cube_drawable;
 					cube_drawable.initialize_data_on_gpu(cube);
 					cube_drawable.material.color = voxel_model.rgb[i];
@@ -185,28 +189,10 @@ void scene_structure::mouse_click_event()
 		
 		if (gui.mouse_mode)
 		{
-			if(inputs.mouse.click.last_action == last_mouse_cursor_action::click_left)
-			// Check if the mouse clicked on a voxel
-			//vec3 mouse_pos = unproject(camera_projection,camera_control.camera_model.matrix_frame(), inputs.mouse.position.current);
-			/*int selected_voxel_idx = -1;
-			float min_distance = 10.0f;
-			for (int i = 0; i < voxel_model.v.size(); i++) {
-				float distance = norm(mouse_pos - voxel_model.v[i]);
-				if (distance < min_distance) {
-					min_distance = distance;
-					selected_voxel_idx = i;
-					break;
-				}
-			}*/
-
-			//if (selected_voxel_idx != -1) {
-				// Store the selected voxel index
-			//	deforming_voxel_idx = selected_voxel_idx;
-
-				// Store the initial mouse position
-				//initial_mouse_pos = vec3{0,mouse_pos.y,mouse_pos.z};
-				initial_mouse_pos =  unproject(camera_projection,camera_control.camera_model.matrix_frame(), inputs.mouse.position.current);
-			//} 
+			if(inputs.mouse.click.last_action == last_mouse_cursor_action::click_left){
+				vec3 mouse_pos =  unproject(camera_projection,camera_control.camera_model.matrix_frame(), inputs.mouse.position.current);
+				initial_mouse_pos = vec3{0,mouse_pos.y,mouse_pos.z};
+			}
 		}
 		else if (gui.sketch_mode){
 			
@@ -234,7 +220,7 @@ void scene_structure::mouse_click_event()
 					cube_drawable.initialize_data_on_gpu(cube);
 					cube_drawable.material.color = vec3{1,1,0};
 					cube_drawable.material.color = vox_from_png.voxel.rgb[i];
-					voxel_mesh[i] = cube_drawable;
+					png_mesh[i] = cube_drawable;
 				}
 				
 			}
