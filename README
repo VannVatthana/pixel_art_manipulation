@@ -1,0 +1,12 @@
+Project PRIM: Pixel art manipulation
+Base code from CGP Library by Damien Rohmer
+Implemented by : Vannvatthana NORNG
+
+To run this project, please do the following step
+
+`` cd ../pixel_art_manipulation/manipulation
+   make
+  ./manip ``
+
+Since I used makefile to run this project, it only works on Linux OS. 
+In the GUI, there are buttons to select each limb that you want to manipulate. Check or uncheck the box "Sketch Mode" to switch between manipulation of the 3D model and navigation mode.

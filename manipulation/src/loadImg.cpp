@@ -100,34 +100,37 @@ struct Voxel3D
     void reencode2img()
     {
         // Reset the rgba data
+        int img_size = front.height;
         front.updated_rgba.clear();
-        front.updated_rgba = std::vector<std::vector<vec4>>(front.height, std::vector<vec4>(front.width));
+        front.updated_rgba = std::vector<std::vector<vec4>>(img_size, std::vector<vec4>(img_size));
 
         back.updated_rgba.clear();
-        back.updated_rgba = std::vector<std::vector<vec4>>(back.height, std::vector<vec4>(back.width));
+        back.updated_rgba = std::vector<std::vector<vec4>>(img_size, std::vector<vec4>(img_size));
 
         side.updated_rgba.clear();
-        side.updated_rgba = std::vector<std::vector<vec4>>(side.height, std::vector<vec4>(side.width));
+        side.updated_rgba = std::vector<std::vector<vec4>>(img_size, std::vector<vec4>(img_size));
         
-        //vec3 offset_vector = vec3{int(front.width/2), int(side.width/2), -int(front.height/2)};
+
         for(int i = 0; i < voxel.v.size(); i++)
         {
-            vec3 p_front = voxel.v[i];// + offset_vector;
-            if(front.updated_rgba[-p_front.z][p_front.x].w == 0) // We only need to know whether alpha = 0 or 1
-                front.updated_rgba[-p_front.z][p_front.x] = vec4{voxel.rgb[i],1.0f};  
+            vec3 p_front = voxel.v[i];
+            if(front.updated_rgba[img_size-p_front.z-1][p_front.x].w == 0) // We only need to know whether alpha = 0 or 1
+                front.updated_rgba[img_size-p_front.z-1][p_front.x] = vec4{voxel.rgb[i],1.0f};  
 
             vec3 p_back = voxel.v[voxel.v.size()- i];// + offset_vector;
-            if(back.updated_rgba[-p_back.z][back.width - p_back.x].w == 0) // We only need to know whether alpha = 0 or 1
-                back.updated_rgba[-p_back.z][back.width - p_back.x] = vec4{voxel.rgb[voxel.v.size() - i],1.0f};  
+            if(back.updated_rgba[img_size-p_back.z-1][img_size - p_back.x-1].w == 0) // We only need to know whether alpha = 0 or 1
+                back.updated_rgba[img_size-p_back.z-1][img_size - p_back.x-1] = vec4{voxel.rgb[voxel.v.size()-i-1],1.0f};  
 
-            if(side.updated_rgba[-p_front.z][p_front.y].w == 0) // We only need to know whether alpha = 0 or 1
-                side.updated_rgba[-p_front.z][p_front.y] = vec4{voxel.rgb[i],1.0f};   
+            if(side.updated_rgba[img_size-p_front.z-1][p_front.y].w == 0) // We only need to know whether alpha = 0 or 1
+                side.updated_rgba[img_size-p_front.z-1][p_front.y] = vec4{voxel.rgb[i],1.0f};   
 
         }
         
         // Reencode data to png
-        front.updatedPng("../assets/newFront.png");
-        back.updatedPng("../assets/newBack.png");
-        side.updatedPng("../assets/newSide.png");
+        front.updatedPng("../assets/results/newFront.png");
+        back.updatedPng("../assets/results/newBack.png");
+        side.updatedPng("../assets/results/newSide.png");
+
+        std::cout<<"Export complete!"<<std::endl;
     }
 };
